@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Tabel</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin: 10px 0;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Tambah Tabel</h1>
+    <label for="jumlahTabel">Jumlah Tabel:</label>
+    <input type="number" id="jumlahTabel" min="1" value="1">
+    <button onclick="buatTabel()">Buat Tabel</button>
+
+    <div id="tabelContainer"></div>
+
+    <script>
+        function buatTabel() {
+            const jumlah = document.getElementById('jumlahTabel').value;
+            const container = document.getElementById('tabelContainer');
+            container.innerHTML = ''; // Kosongkan container sebelum menambah tabel baru
+
+            for (let i = 0; i < jumlah; i++) {
+                const tabel = document.createElement('table');
+                const header = tabel.createTHead();
+                const row = header.insertRow(0);
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                cell1.innerHTML = "Kolom 1";
+                cell2.innerHTML = "Kolom 2";
+
+                const body = tabel.createTBody();
+                const bodyRow = body.insertRow(0);
+                const bodyCell1 = bodyRow.insertCell(0);
+                const bodyCell2 = bodyRow.insertCell(1);
+                bodyCell1.innerHTML = `<input type="text" placeholder="Isi Kolom 1">`;
+                bodyCell2.innerHTML = `<input type="text" placeholder="Isi Kolom 2">`;
+
+                container.appendChild(tabel);
+            }
+        }
+    </script>
+
+</body>
+</html>
