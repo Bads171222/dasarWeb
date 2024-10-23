@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembelian Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Pembelian Game</h1>
+    </header>
+    <main>
+        <form id="gameForm" action="process.php" method="POST" enctype="multipart/form-data">
+            <input type="text" name="gameName" placeholder="Nama Game" required>
+            <input type="file" name="gameIcon" accept="image/*" required>
+            <input type="submit" value="Tambahkan Game">
+        </form>
+        <div id="gameList" class="scroll-animate"></div> <!-- Kelas untuk animasi saat scroll -->
+    </main>
+    <script src="jquery-3.7.1.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
