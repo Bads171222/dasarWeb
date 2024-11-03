@@ -136,3 +136,40 @@ nav ul li a{
     flex: 1;
     font-weight: bold;
 }
+
+.description-section {
+    margin: 20px;
+    padding: 20px;
+    background-color: #ece4f1;
+    border-radius: 15px;
+}
+
+.description-section h2 {
+    font-size: 28px;
+    color: #5a3d7b;
+}
+
+.description-section input {
+    width: calc(100% - 100px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.description-section button {
+    background-color: #7a5f91;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#description-output {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #e4d3ef;
+    border-radius: 5px;
+    color: #5a3d7b;
+}
