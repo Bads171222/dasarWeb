@@ -1,20 +1,25 @@
 <?php
-session_start();
+require_once 'connection.php';
 
-if (!isset($_SESSION['data'])) {
-    $_SESSION['data'] = [];
-}
-
-$data = $_SESSION['data'];
-
-// Handle delete
 if (isset($_GET['delete'])) {
-    unset($data[$_GET['delete']]);
-    $_SESSION['data'] = array_values($data);
-    header("Location: read.php");
-    exit;
+    $index = intval($_GET['delete']);
+    
+    
+    $stmt = $conn->prepare("DELETE FROM tasks WHERE no = :no");
+    $stmt->bindParam(':no', $index);
+    
+   
+    if ($stmt->execute()) {
+        header("Location: read.php");
+        exit;
+    } else {
+        echo "Error deleting task.";
+    }
 }
-//
+
+
+$stmt = $conn->query("SELECT * FROM tasks");
+$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -40,12 +45,12 @@ if (isset($_GET['delete'])) {
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($data as $index => $item): ?>
+                <?php foreach ($data as $item): ?>
                 <tr>
-                    <td><?= $index + 1 ?></td>
-                    <td><?= $item['task'] ?></td>
-                    <td><?= $item['description'] ?></td>
-                    <td><?= $item['deadline'] ?></td>
+                    <td><?= htmlspecialchars($item['no']) ?></td>
+                    <td><?= htmlspecialchars($item['task']) ?></td>
+                    <td><?= htmlspecialchars($item['description']) ?></td>
+                    <td><?= htmlspecialchars($item['deadline']) ?></td>
                     <td>
                         <?php
                         $now = time();
@@ -56,19 +61,19 @@ if (isset($_GET['delete'])) {
                             $days = floor($remaining / (60 * 60 * 24));
                             echo $days . " days left";
                         } else {
-                            echo "Deadline passed";
+                            echo "Tugas Anda Terlambat";
                         }
                         ?>
                     </td>
                     <td>
-                        <a href="update.php?index=<?= $index ?>">Edit</a>
-                        <a href="?delete=<?= $index ?>" onclick="return confirm('Are you sure?')">Delete</a>
- </td>
+                        <a href="update.php?index=<?= htmlspecialchars($item['no']) ?>">Edit</a>
+                        <a href="?delete=<?= htmlspecialchars($item['no']) ?>" onclick="return confirm('Apakah anda serius ingin mneghapus?')">Delete</a>
+                    </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <a href="index.php">Back</a>
+        <a href="index.php" class="back">Back</a>
     </div>
 </body>
 </html>

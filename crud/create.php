@@ -1,18 +1,31 @@
 <?php
+require_once 'connection.php';
 session_start();
 
-if (!isset($_SESSION['data'])) {
-    $_SESSION['data'] = [];
-}
-
-// Handle create
 if (isset($_POST['create'])) {
     $task = htmlspecialchars($_POST['task']);
     $description = htmlspecialchars($_POST['description']);
     $deadline = htmlspecialchars($_POST['deadline']);
-    $_SESSION['data'][] = ['task' => $task, 'description' => $description, 'deadline' => $deadline];
-    header("Location: read.php");
-    exit;
+
+   
+    $stmt = $conn->prepare("INSERT INTO tasks (task, description, deadline, timeremaining) VALUES (:task, :description, :deadline, :timeremaining)");
+    
+    
+    $timeremaining = 0;
+
+  
+    $stmt->bindParam(':task', $task);
+    $stmt->bindParam(':description', $description);
+    $stmt->bindParam(':deadline', $deadline);
+    $stmt->bindParam(':timeremaining', $timeremaining);
+
+  
+    if ($stmt->execute()) {
+        header("Location: read.php");
+        exit;
+    } else {
+        echo "Error inserting data.";
+    }
 }
 ?>
 
@@ -33,7 +46,7 @@ if (isset($_POST['create'])) {
             <input type="date" name="deadline" required>
             <button type="submit" name="create">Add Task</button>
         </form>
-        <a href="index.php">Back</a>
+        <a href="index.php" class="back">Back</a>
     </div>
 </body>
 </html>

@@ -1,26 +1,49 @@
 <?php
-session_start();
-$data = $_SESSION['data'];
+require_once 'connection.php';
 
-if (!isset($_GET['index']) || !isset($data[$_GET['index']])) {
+
+if (!isset($_GET['index'])) {
     header("Location: read.php");
     exit;
 }
 
 $index = $_GET['index'];
-$task = $data[$index]['task'];
-$description = $data[$index]['description'];
-$deadline = $data[$index]['deadline'];
 
-// Handle update
+
+$stmt = $conn->prepare("SELECT * FROM tasks WHERE no = :no");
+$stmt->bindParam(':no', $index);
+$stmt->execute();
+$taskData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$taskData) {
+    header("Location: read.php");
+    exit;
+}
+
+
+$task = $taskData['task'];
+$description = $taskData['description'];
+$deadline = $taskData['deadline'];
+
 if (isset($_POST['update'])) {
     $task = htmlspecialchars($_POST['task']);
     $description = htmlspecialchars($_POST['description']);
     $deadline = htmlspecialchars($_POST['deadline']);
-    $data[$index] = ['task' => $task, 'description' => $description, 'deadline' => $deadline];
-    $_SESSION['data'] = $data;
-    header("Location: read.php");
-    exit;
+
+
+    $stmt = $conn->prepare("UPDATE tasks SET task = :task, description = :description, deadline = :deadline WHERE no = :no");
+    $stmt->bindParam(':task', $task);
+    $stmt->bindParam(':description', $description);
+    $stmt->bindParam(':deadline', $deadline);
+    $stmt->bindParam(':no', $index);
+
+
+    if ($stmt->execute()) {
+        header("Location: read.php");
+        exit;
+    } else {
+        echo "Error updating data.";
+    }
 }
 ?>
 
@@ -36,12 +59,12 @@ if (isset($_POST['update'])) {
     <div class="container">
         <h1>Update Task</h1>
         <form action="update.php?index=<?= $index ?>" method="POST">
-            <input type="text" name="task" placeholder="Enter Task" required value="<?= $task ?>">
-            <textarea name="description" placeholder="Enter Description" required><?= $description ?></textarea>
-            <input type="date" name="deadline" required value="<?= $deadline ?>">
+            <input type="text" name="task" placeholder="Enter Task" required value="<?= htmlspecialchars($task) ?>">
+            <textarea name="description" placeholder="Enter Description" required><?= htmlspecialchars($description) ?></textarea>
+            <input type="date" name="deadline" required value="<?= htmlspecialchars($deadline) ?>">
             <button type="submit" name="update">Update Task</button>
         </form>
-        <a href="read.php">Back</a>
+        <a href="read.php" class="back">Back</a>
     </div>
 </body>
 </html>
